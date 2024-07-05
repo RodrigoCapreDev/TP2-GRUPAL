@@ -1,0 +1,45 @@
+body{
+  display: grid;
+  grid-template-areas: 
+    "header header"
+    "sidebar main"
+    "footer footer";
+  grid-template-rows: 100px auto 50px;
+  grid-template-columns: 10% 1fr;
+  background-color: #f4faff;
+  height: 100vh;
+  margin: 0;
+  box-sizing: border-box; /* Asegura que el padding y border se incluyan en el ancho total */
+  overflow-x: hidden; /* Evita la barra de desplazamiento horizontal */
+}
+header{
+  grid-area: header;
+  display: grid;
+  grid-template-areas:"logo titulo";
+  grid-template-columns: 10% 1fr;
+  grid-template-rows: auto;
+  text-align: center;
+  color: #F4FAFF;
+  background-color: #00916E;
+}
+
+footer {
+  grid-area: footer;
+  color: #F4FAFF;
+  font-weight: bold;
+  text-align: right;
+  padding: 10px;
+  background-color: #439A86;
+}
+
+main{
+  grid-area: main;
+  background-color: #F4FAFF;
+  padding: 15px;
+  border-radius: 5px;
+}
+aside {
+  grid-area: sidebar;
+  background-color: #04151f;
+  justify-content: center;
+}
