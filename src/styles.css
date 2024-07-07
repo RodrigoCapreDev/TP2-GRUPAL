@@ -1,4 +1,4 @@
-body{
+body {
   display: grid;
   grid-template-areas: 
     "header header"
@@ -6,40 +6,92 @@ body{
     "footer footer";
   grid-template-rows: 100px auto 50px;
   grid-template-columns: 10% 1fr;
-  background-color: #f4faff;
+  background-color: #f4faff; 
   height: 100vh;
   margin: 0;
-  box-sizing: border-box; /* Asegura que el padding y border se incluyan en el ancho total */
-  overflow-x: hidden; /* Evita la barra de desplazamiento horizontal */
 }
-header{
+
+header {
   grid-area: header;
-  display: grid;
-  grid-template-areas:"logo titulo";
-  grid-template-columns: 10% 1fr;
-  grid-template-rows: auto;
-  text-align: center;
-  color: #F4FAFF;
-  background-color: #00916E;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: linear-gradient(to bottom, #ffb3ba 0%, #ffdfba 100%);
+  color: #333;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  left: 40px;
+}
+
+aside {
+  grid-area: sidebar;
+  background: linear-gradient(to bottom, #ffdfba 0%, #bae1ff 100%);
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  padding-top: 20px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+li {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.buttonLink {
+  background: none;
+  border: 1px solid #666;
+  border-radius: 12px;
+  color: #333;
+  font-size: 16px;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.buttonLink a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.buttonLink:hover {
+  background-color: #ffb3ba; 
+  color: #fff;
+}
+
+.buttonLink:active {
+  background-color: #ff7f7f;
+  color: white;
 }
 
 footer {
   grid-area: footer;
-  color: #F4FAFF;
+  color: #333;
   font-weight: bold;
   text-align: right;
   padding: 10px;
-  background-color: #439A86;
+  background-color: #bae1ff;
 }
 
-main{
+main {
   grid-area: main;
-  background-color: #F4FAFF;
+  background-color: #000000;
+  color: white;
   padding: 15px;
   border-radius: 5px;
 }
-aside {
-  grid-area: sidebar;
-  background-color: #04151f;
-  justify-content: center;
-}
+
