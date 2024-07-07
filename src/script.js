@@ -33,36 +33,7 @@ async function getActorMovies(){
 
 }
 
-/*const getActorId = (async () => { //funcion para obtener el id del actor
-  var authParameters = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer ' + apiTMBDtoken
-    }
-  };
-  await fetch(`https://api.themoviedb.org/3/search/person?query=${ActorName}`,authParameters)
-    .then(result => result.json())
-    .then(data =>{
-      respuesta = data.results[0].id; 
-      console.log(data);
-  });
-  ActorId=respuesta;
-})(); //Se va a ejecutar primero, devuelve el id para buscar peliculas en tmdb
-
-const getActorMovies = (async () => { //funcion para obtener las peliculas del actor
-  var authParameters = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer ' + apiTMBDtoken
-    }
-  };
-  await fetch(`https://api.themoviedb.org/3/person/${ActorId}/movie_credits?language=en-US`,authParameters)
-    .then(result => result.json())
-    .then(data =>{
-      respuesta = data.results[0].id; 
-      console.log(data);
-  });
-  ActorId=respuesta;
-})();*/
+function funcionVacia(){
+  console.log('Funcion vacia');
+}
+//Comentario
