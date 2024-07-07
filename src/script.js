@@ -2,6 +2,7 @@
 apiTMBDtoken='eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNjFjMjRlMzRhOTVlODcyMzM3Zjg1ZTIwZTA0NjVjNCIsIm5iZiI6MTcyMDE5NzUzNS4yOTA4OSwic3ViIjoiNjY4ODAzOTJmNGJiMjQ5OGYzYjBhMmFlIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hJ6wjC2I_Uj_k3Kg5lk65vJ3cLH-Mh7PSgq5U3g6LTk'
 const ActorName='Tom Cruise'
 var ActorId='';
+var Movies='';
 
 const getActorId = (async () => { //funcion para obtener el id del actor
   var authParameters = {
@@ -20,3 +21,19 @@ const getActorId = (async () => { //funcion para obtener el id del actor
   ActorId=respuesta;
 })(); //Se va a ejecutar primero, devuelve el id para buscar peliculas en tmdb
 
+const getActorMovies = (async () => { //funcion para obtener las peliculas del actor
+  var authParameters = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer ' + apiTMBDtoken
+    }
+  };
+  await fetch(`https://api.themoviedb.org/3/person/${ActorId}/movie_credits?language=en-US`,authParameters)
+    .then(result => result.json())
+    .then(data =>{
+      respuesta = data.results[0].id; 
+      console.log(data);
+  });
+  ActorId=respuesta;
+})();
