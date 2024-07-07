@@ -4,7 +4,36 @@ const ActorName='Tom Cruise'
 var ActorId='';
 var Movies='';
 
-const getActorId = (async () => { //funcion para obtener el id del actor
+getActorMovies();
+
+async function getActorMovies(){
+
+    var authParameters = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer ' + apiTMBDtoken
+      }
+    };
+  var ActorId = await fetch(`https://api.themoviedb.org/3/search/person?query=${ActorName}`,authParameters)
+      .then(result => result.json())
+      .then(data =>{
+        respuesta = data.results[0].id; 
+        console.log(data);
+        return respuesta
+    });
+
+  var Movies = await fetch(`https://api.themoviedb.org/3/person/${ActorId}/movie_credits?language=en-US`,authParameters)
+    .then(result => result.json())
+    .then(data =>{
+      respuesta = data.results;
+      console.log(data); 
+      return respuesta;
+  });
+
+}
+
+/*const getActorId = (async () => { //funcion para obtener el id del actor
   var authParameters = {
     method: 'GET',
     headers: {
@@ -36,4 +65,4 @@ const getActorMovies = (async () => { //funcion para obtener las peliculas del a
       console.log(data);
   });
   ActorId=respuesta;
-})();
+})();*/
