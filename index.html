@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TP 2- G18</title>
   <link rel="stylesheet" type="text/css" href="src/styles.css">
-  <script type="text/javascript" href="src/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script><!--Para usar axios-->
 </head>
 
 <!--Obtener 10 películas dónde haya actuado Tom Cruise y guardar: Título, sinopsis, género/s, cantidad de votos, y promedio de votos-->
 
 <body>
   <header class="header">
-    <img src="./images/logo.png" class="logo" alt="logo">
+    <img src="./images/logo.png" class="logo" id="logo" alt="logo">
     <h1>TP Nro 2 - Grupo 18</h1>
   </header>
   <aside>
@@ -22,7 +22,11 @@
   </ul>
   </aside>
   <main>
-    
+    <button class="carrusel-prev" onclick="prevSlide()"><img src="images/anterior.png" alt="anterior"></button>
+    <div class="carrusel">
+      <div class="innerCarrusel"></div>
+    </div>
+    <button class="carrusel-post" onclick="posSlide()"><img src="images/siguiente.png" alt="Siguiente"></button>
   </main>
   <footer>TyG Web 2024</footer>
   <script type="application/javascript" src="./src/script.js"></script>
