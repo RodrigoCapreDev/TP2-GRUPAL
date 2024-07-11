@@ -171,66 +171,80 @@ async function getDataFromStrapi() {
 
 
 //CARRUSEL
-//moviesStrapi array de datos
 const carouselInner = document.getElementById('carouselInner');
-let currentIndex = 0;
+let currentIndex = 1;
+
 
 function loadCarousel() {
-  carouselInner.innerHTML = '';
-  console.log(movies);
+ 
+    let mainSection = '<div class="carousel-item"></div>';
+    
+    movies.forEach((movie, i) => {
+      mainSection += `
+            <div class="carousel-item">
+                <div class="actor-position">
+                    <h2>${i + 1}</h2>
+                </div>
+                <img src="${movie.attributes.Imagen}" alt="Movie Poster">
+                <div class="carousel-caption">
+                    <h3>${movie.attributes.Titulo}</h3>
+                </div>
+            </div>`;
   
-  movies.forEach((movie, index) => {
-    console.log(movie);
-    const slide = document.createElement('figure');
-    slide.classList.add('slide');
+    });
 
-    // Establecer clase adicional para la imagen principal
-    if (index === currentIndex) {
-      slide.classList.add('main-slide');
-    }
+    mainSection += '<div class="carousel-item"></div>';
 
-    slide.style.transform = `translateX(${index * 33.33}%)`;
+    const carouselInner = document.querySelector('.carousel-inner');
+    if (carouselInner) {
+        carouselInner.innerHTML = mainSection;
 
-    const img = document.createElement('img');
-    img.src = movie.attributes.Imagen;
-    img.alt = movie.attributes.Titulo;
+        showSlide(1);
+        const movieInfos = document.querySelectorAll('.movieInfo');
+        movieInfos.forEach(movieInfo => movieInfo.classList.add('hidden'));
 
-    const figcaption = document.createElement('figcaption');
-    figcaption.textContent = movie.attributes.Titulo;
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        carouselItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                const movieInfo = this.querySelector('.movieInfo');
+                const carouselCaption = this.querySelector('.carousel-caption');
+                const img = this.querySelector('img');
 
-    slide.appendChild(img);
-    slide.appendChild(figcaption);
-    carouselInner.appendChild(slide);
-  });
+                if (movieInfo) {
+                    movieInfo.classList.remove('hidden');
+                }
+                if (carouselCaption) {
+                    carouselCaption.classList.add('hidden');
+                }
+                if (img) {
+                    img.classList.add('hidden');
+                }
+            });
 
+            item.addEventListener('mouseleave', function() {
+                const movieInfo = this.querySelector('.movieInfo');
+                const carouselCaption = this.querySelector('.carousel-caption');
+                const img = this.querySelector('img');
+
+                if (movieInfo) {
+                    movieInfo.classList.add('hidden');
+                }
+                if (carouselCaption) {
+                    carouselCaption.classList.remove('hidden');
+                }
+                if (img) {
+                    img.classList.remove('hidden');
+                }
+            });
+        });
+  }
 }
 
-function moveCarousel(direction) {
-  currentIndex = Math.max(0, Math.min(currentIndex + direction, movies.length - 1));
-  carouselInner.style.transform = `translateX(${-currentIndex * 33.33}%)`;
 
-  // Actualizar clases para reflejar la imagen principal
-  const slides = document.querySelectorAll('.slide');
-  slides.forEach((slide, index) => {
-    slide.classList.remove('main-slide');
-    if (index === currentIndex) {
-      slide.classList.add('main-slide');
-    }
-  });
-}
-
-// Cargar el carrusel cuando la página esté lista
-/*
-document.addEventListener('DOMContentLoaded', () => {
-  loadCarousel();
-});*/
-
-//CARRUSEL
-/*
-let currentIndex=1;
 function showSlide(index) {
-    const slides = document.querySelectorAll('.carrusel-item');
+    const slides = document.querySelectorAll('.carousel-item');
     const totalSlides = slides.length;
+
     if (index >= totalSlides) {
         currentIndex = 0;
     } else if (index < 0) {
@@ -254,18 +268,21 @@ function showSlide(index) {
         }
     };
 }
+
+
 function prevSlide() {
-    if(currentIndex == 1) {
-        return ;
-    }
-    showSlide(currentIndex - 1);
+  if(currentIndex == 1) {
+      return ;
+  }
+  showSlide(currentIndex - 1);
 }
-function postSlide() {
-    if(currentIndex == 10) {
-        return ;
-    }
-    showSlide(currentIndex + 1);
-}*/
+
+function nextSlide() {
+  if(currentIndex == 10) {
+      return ;
+  }
+  showSlide(currentIndex + 1);
+}
 
 //RECARGAR PAGINA CON EL LOGO
 document.addEventListener('DOMContentLoaded', function() {

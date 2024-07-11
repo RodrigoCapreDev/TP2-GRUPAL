@@ -117,71 +117,150 @@ button img {
 /*Carrusel*/
 .carousel {
     position: relative;
-    max-width: 800px;
-    margin: 0 auto;
     overflow: hidden;
-  }
-  
-  .carousel-inner {
+    width: 90%;
+    margin: auto;
     display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-inner {
+    display: flex;
+    flex-direction: row;
     transition: transform 0.5s ease;
-    overflow: hidden;
-  }
-  
-  .slide {
-    flex: 0 0 33%; /* Cada imagen ocupa un tercio del ancho */
-    margin-right: 10px;
-    transition: transform 0.3s ease;
-  }
-  
-  .carousel img {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-item {
+    flex: 1;
+    opacity: 0.5;
+    transform: scale(0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 10px;
+    position: relative; /* Añadido para controlar las superposiciones */
+}
+
+.carousel-item img,
+.moviePoster img {
     width: 100%;
     height: auto;
-    display: block;
-  }
-  
-  .carousel-control {
+    border-radius: 10px;
+}
+
+.carousel-item.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.carousel-item.left,
+.carousel-item.right {
+    opacity: 0.75;
+    transform: scale(0.9);
+    pointer-events: none;
+}
+
+.carousel-item.hidden {
+    display: none;
+}
+
+.carousel-item:hover {
+    cursor: pointer;
+}
+
+.actor-position {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 8%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 0;
+    border-radius: 10px 0 10px 0;
+}
+
+.carousel-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 0;
+    border-radius: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+.movieDetails {
+    display: none;
+}
+
+.carousel-item:hover .movieDetails {
+    position: absolute;
+    bottom: 4px;
+    width: 90.25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 5%;
+    font-size: larger;
+    font-family: math;
+}
+
+.movieInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h3,
+p {
+    margin: 0;
+}
+
+.carousel-control {
+    width: 40px; /* Ancho ajustado */
+    height: 40px; /* Alto ajustado */
+    font-size: 24px;
+    color: #e0e1dd;
+    background-color: #0d1321;
+    border: none;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
-    border: none;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    padding: 10px;
-    z-index: 2;
-  }
-  
-  .carousel-control.prev {
-    left: 10px;
-  }
-  
-  .carousel-control.next {
-    right: 10px;
-  }
-/*
-button.carrusel-prev:hover,
-button.carrusel-post:hover {
-    transform: scale(1.3);
-    transition: transform 0.3s ease;
+    border-radius: 50%; /* Forma circular */
 }
 
-.carrusel{
-    position: relative;
-    overflow: hidden;
-    width: 90%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.carousel-control.prev {
+    left: 10px; /* Ajuste de posición izquierda */
 }
-.innerCarrusel{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    transition: transform 0.7s ease;
-}*/
 
+.carousel-control.next {
+    right: 10px; /* Ajuste de posición derecha */
+}
 
   

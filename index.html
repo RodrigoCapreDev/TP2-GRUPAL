@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TP 2- G18</title>
   <link rel="stylesheet" type="text/css" href="src/styles.css">
+  <link rel="stylesheet" href="src/carousel.css">
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script><!--Para usar axios-->
 </head>
 
@@ -24,22 +25,11 @@
   <main>
     <div class="carousel">
       <div class="carousel-inner" id="carouselInner">
-        <!-- Imágenes de las películas se agregarán dinámicamente aquí -->
+         <!--Imágenes de las películas se agregarán dinámicamente aquí -->
       </div>
-      <button class="carousel-control prev" onclick="moveCarousel(-1)">&#10094;</button>
-      <button class="carousel-control next" onclick="moveCarousel(1)">&#10095;</button>
+      <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
+      <button class="carousel-control next" onclick="nextSlide()">&#10095;</button>
     </div>
-    <!--
-    <section class="carrusel">
-      <div class="carrusel-inner" id="carruselInner">
-
-      </div>
-      <button class="carrusel-prev" onclick="prevSlide()"><img src="images/anterior.png" alt="anterior"></button>
-      <div class="carrusel">
-        <div class="innerCarrusel"></div>
-      </div>
-      <button class="carrusel-post" onclick="posSlide()"><img src="images/siguiente.png" alt="Siguiente"></button>
-    </section>-->
   </main>
   <footer>TyG Web 2024</footer>
   <script type="application/javascript" src="./src/script.js"></script>
