@@ -1,93 +1,147 @@
 //Api info https://developer.themoviedb.org/docs/getting-started
 apiTMBDtoken='eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNjFjMjRlMzRhOTVlODcyMzM3Zjg1ZTIwZTA0NjVjNCIsIm5iZiI6MTcyMDE5NzUzNS4yOTA4OSwic3ViIjoiNjY4ODAzOTJmNGJiMjQ5OGYzYjBhMmFlIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hJ6wjC2I_Uj_k3Kg5lk65vJ3cLH-Mh7PSgq5U3g6LTk';
 StrapiToken='099da4cc6cbb36bf7af8de6f1f241f8c81e49fce15709c4cfcae1313090fa2c1ac8703b0179863b4eb2739ea65ae435e90999adb870d49f9f94dcadd88999763119edca01a6b34c25be92a80ed30db1bcacb20df40e4e7f45542bd501f059201ad578c18a11e4f5cd592cb25d6c31a054409caa99f11b6d2391440e9c72611ea';
-const ActorName='Tom Cruise';
-var ActorId='';
-var Movies='';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const STRAPI_URL = 'https://gestionweb.frlp.utn.edu.ar/api/g18-peliculas'; // URL de tu instancia de Strapi
 
+const actorName='Tom Cruise';
+let movies=null;
 //Para buscar peliculas del actor utilizando la libreria de js axios
 async function fetchActorMovies() {
   try {
-    // Buscar el ID del actor
-    const searchResponse = await axios.get(`${BASE_URL}/search/person?query=${ActorName}`, {
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer ' + apiTMBDtoken
-      }
-    });
+    //Llamamos a la funcion para obtener el id del actor
+    const actorId= await getActorId(actorName);
+    //Llamamos a la funcion para obtener las peliculas donde actua el actor
+    const movies = await getActorMovies(actorId);
+    //Llamamos a la funcion para obtener los detalles de las peliculas
+    const movieDetails = await getMovieDetails(movies);
 
-    console.log(searchResponse);
-    const nombreActorId = searchResponse.data.results[0].id;
-
-    // Obtener las películas en las que ha actuado el actor
-    const moviesResponse = await axios.get(`${BASE_URL}/person/${nombreActorId}/movie_credits`, {
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer ' + apiTMBDtoken
-      }
-    });
-
-    
-    const movies = moviesResponse.data.cast.slice(0, 10);
-    console.log(movies);
-    
-    const movieDetails = await Promise.all(movies.map(async (movie) => {
-      const movieResponse = await axios.get(`${BASE_URL}/movie/${movie.id}`, {
-        headers: {
-          accept: 'application/json',
-          Authorization: 'Bearer ' + apiTMBDtoken
-        }
-      });
-
-      const movieData = movieResponse.data;
-
-      return {
-        title: movieData.title,
-        synopsis: movieData.overview,
-        genres: movieData.genres.map(genre => genre.name).join(', '),
-        vote_count: movieData.vote_count,
-        vote_average: movieData.vote_average,
-        image: `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
-      };
-    }));
-
-    console.log(movieDetails);
-    // Enviar los datos a Strapi
-    
-    for (const movie of movieDetails) {
-      //console.log(movie);
-      try{
-        const response = await fetch('https://gestionweb.frlp.utn.edu.ar/api/g18-peliculas', {
-          method: 'POST',
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: 'Bearer ' + StrapiToken 
-          },
-          body: JSON.stringify({
-            Titulo: movie.title,
-            Sinopsis: movie.synopsis,
-            Genero: movie.genres, // Si genres es un array, conviértelo a string
-            CantVotos: movie.vote_count,
-            PromVotos: movie.vote_average,
-            Imagen: movie.image
-        })
-        });
-
-        if (!response.ok) {
-          throw new Error('Error en la solicitud: ' + response.status);
-        }
-        } catch (error) {
-            console.error('Error uploading pelicula:', error.message);
-        }
-    }
+    //Si hay datos en strapi, se borrar (Reinicio CMS)
+    await deleteAllDataFromStrapi();
+    //Envia las nuevas peliculas a Strapi
+    await sendMoviesToStrapi(movieDetails);
   } catch (error) {
     console.error('Error fetching movie data:', error);
   }
 }
 
+async function getActorId(ActorName) {
+  const response = await axios.get(`${BASE_URL}/search/person?query=${ActorName}`, {
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer ' + apiTMBDtoken
+    }
+  });
+
+  console.log(response);
+  return response.data.results[0].id;
+}
+
+async function getActorMovies(actorId) {
+  const response = await axios.get(`${BASE_URL}/person/${actorId}/movie_credits`, {
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer ' + apiTMBDtoken
+    }
+  });
+
+  return response.data.cast.slice(0, 10);
+}
+
+async function getMovieDetails(movies) {
+  return await Promise.all(movies.map(async (movie) => {
+    const response = await axios.get(`${BASE_URL}/movie/${movie.id}`, {
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer ' + apiTMBDtoken
+      }
+    });
+
+    const movieData = response.data;
+
+    return {
+      title: movieData.title,
+      synopsis: movieData.overview,
+      genres: movieData.genres.map(genre => genre.name).join(', '),
+      vote_count: movieData.vote_count,
+      vote_average: movieData.vote_average,
+      image: `https://image.tmdb.org/t/p/w500${movieData.poster_path}`
+    };
+  }));
+}
+
+async function deleteAllDataFromStrapi() {
+  const response = await fetch(STRAPI_URL, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + StrapiToken
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Error en la solicitud: ' + response.status);
+  }
+
+  const data = await response.json();
+  console.log('Datos obtenidos:', data);
+
+  for (const item of data.data) {
+    const deleteResponse = await fetch(`${STRAPI_URL}/${item.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + StrapiToken
+      }
+    });
+
+    if (!deleteResponse.ok) {
+      throw new Error('Error en la solicitud de eliminación: ' + deleteResponse.status);
+    }
+
+    const deleteData = await deleteResponse.json();
+    console.log('Datos eliminados:', deleteData);
+  }
+}
+
+async function sendMoviesToStrapi(movieDetails) {
+  for (const movie of movieDetails) {
+    const movieData = {
+      Titulo: movie.title,
+      Sinopsis: movie.synopsis,
+      Genero: Array.isArray(movie.genres) ? movie.genres.join(', ') : movie.genres,
+      CantVotos: movie.vote_count,
+      PromVotos: Math.round(movie.vote_average),
+      Imagen: movie.image
+    };
+
+    console.log('Enviando JSON:', JSON.stringify(movieData));
+
+    try {
+      const response = await fetch(STRAPI_URL, {
+        method: 'POST',
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: 'Bearer ' + StrapiToken
+        },
+        body: JSON.stringify({ data: movieData })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Detalles del error:', errorData);
+        throw new Error('Error en la solicitud: ' + response.status);
+      }
+
+      const responseData = await response.json();
+      console.log('Datos guardados:', responseData);
+
+    } catch (error) {
+      console.error('Error uploading pelicula:', error.message);
+    }
+  }
+}
 fetchActorMovies();
 
 async function getDataFromStrapi() {
@@ -104,14 +158,75 @@ async function getDataFromStrapi() {
 		.then(data =>{
 			respuesta = data;
       console.log(data); 
-			//return data.results; //devuelve los 20 primeros resultados
+			return data; //devuelve los 20 primeros resultados
 		});
+    //const moviesStrapi = response.data;
+    console.log(response.data);
+    movies=response.data;
+    loadCarousel();
   } catch (error) {
     console.error('Fetch error:', error);
   }
 }
 
+
 //CARRUSEL
+//moviesStrapi array de datos
+const carouselInner = document.getElementById('carouselInner');
+let currentIndex = 0;
+
+function loadCarousel() {
+  carouselInner.innerHTML = '';
+  console.log(movies);
+  
+  movies.forEach((movie, index) => {
+    console.log(movie);
+    const slide = document.createElement('figure');
+    slide.classList.add('slide');
+
+    // Establecer clase adicional para la imagen principal
+    if (index === currentIndex) {
+      slide.classList.add('main-slide');
+    }
+
+    slide.style.transform = `translateX(${index * 33.33}%)`;
+
+    const img = document.createElement('img');
+    img.src = movie.attributes.Imagen;
+    img.alt = movie.attributes.Titulo;
+
+    const figcaption = document.createElement('figcaption');
+    figcaption.textContent = movie.attributes.Titulo;
+
+    slide.appendChild(img);
+    slide.appendChild(figcaption);
+    carouselInner.appendChild(slide);
+  });
+
+}
+
+function moveCarousel(direction) {
+  currentIndex = Math.max(0, Math.min(currentIndex + direction, movies.length - 1));
+  carouselInner.style.transform = `translateX(${-currentIndex * 33.33}%)`;
+
+  // Actualizar clases para reflejar la imagen principal
+  const slides = document.querySelectorAll('.slide');
+  slides.forEach((slide, index) => {
+    slide.classList.remove('main-slide');
+    if (index === currentIndex) {
+      slide.classList.add('main-slide');
+    }
+  });
+}
+
+// Cargar el carrusel cuando la página esté lista
+/*
+document.addEventListener('DOMContentLoaded', () => {
+  loadCarousel();
+});*/
+
+//CARRUSEL
+/*
 let currentIndex=1;
 function showSlide(index) {
     const slides = document.querySelectorAll('.carrusel-item');
@@ -150,7 +265,7 @@ function postSlide() {
         return ;
     }
     showSlide(currentIndex + 1);
-}
+}*/
 
 //RECARGAR PAGINA CON EL LOGO
 document.addEventListener('DOMContentLoaded', function() {
@@ -159,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  document.getElementById('link2').addEventListener('click', function(event) {
-    console.log("se clikeo link2");
-    getDataFromStrapi();
-  });
+document.getElementById('link2').addEventListener('click', function(event) {
+  console.log("se clikeo link2");
+  getDataFromStrapi();
+});
