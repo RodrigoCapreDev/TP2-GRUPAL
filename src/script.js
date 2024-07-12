@@ -182,7 +182,7 @@ function loadCarousel() {
     movies.forEach((movie, i) => {
       mainSection += `
             <div class="carousel-item">
-                <div class="actor-position">
+                <div class="movie-position">
                     <h2>${i + 1}</h2>
                 </div>
                 <img src="${movie.attributes.Imagen}" alt="Movie Poster">
