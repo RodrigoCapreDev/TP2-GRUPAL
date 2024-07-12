@@ -140,9 +140,10 @@ async function sendMoviesToStrapi(movieDetails) {
       console.error('Error uploading pelicula:', error.message);
     }
   }
+
+  alert("Datos cargados a strapi");
 }
 
-fetchActorMovies();
 async function getDataFromStrapi() {
   try {
     const response = await fetch(STRAPI_URL, {
@@ -169,69 +170,84 @@ const carouselInner = document.getElementById('carouselInner');
 let currentIndex = 1;
 
 function loadCarousel() {
- 
-    let mainSection = '<div class="carousel-item"></div>';
-    
-    movies.forEach((movie, i) => {
-      mainSection += `
-            <div class="carousel-item">
-                <div class="actor-position">
-                    <h2>${i + 1}</h2>
-                </div>
-                <img src="${movie.attributes.Imagen}" alt="Movie Poster">
-                <div class="carousel-caption">
-                    <h3>${movie.attributes.Titulo}</h3>
-                </div>
-            </div>`;
+  let mainSection = '<div class="carousel-item"></div>';
   
-    });
+  movies.forEach((movie, i) => {
+    mainSection += `
+      <div class="carousel-item">
+        <div class="movie-position">
+          <h2>${i + 1}</h2>
+        </div>
+        <img src="${movie.attributes.Imagen}" alt="Movie Poster">
+        <div class="movie-info hidden"> 
+          <div class="movie_info_block block_wide">
+            <div class="movie_info_tittle"><p>Titulo</p></div>
+            <div class="movie_info_text titulo">
+              <p>${movie.attributes.Titulo}</p>
+            </div>
+          </div>
+          <div class="movie_info_block block_wide">
+            <div class="movie_info_tittle"><p>Sinopsis</p></div>
+            <div class="movie_info_text sinopsis">
+              <p>${movie.attributes.Sinopsis}</p>
+            </div>
+          </div>
+          <div class="movie_info_block block_wide">
+            <div class="movie_info_tittle"><p>Generos</p></div>
+            <div class="movie_info_text generos">
+              <p>${movie.attributes.Genero}</p>
+            </div>
+          </div>
+          <div class="movie_info_block block_wide">
+            <div class="movie_info_tittle"><p>Cant Votos</p></div>
+            <div class="movie_info_text cant_votos">
+              <p>${movie.attributes.CantVotos}</p>
+            </div>
+          </div>
+          <div class="movie_info_block block_wide">
+            <div class="movie_info_tittle"><p>Prom Votos</p></div>
+            <div class="movie_info_text prom_votos">
+              <p>${movie.attributes.PromVotos}</p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-caption">
+          <h3>${movie.attributes.Titulo}</h3>
+        </div>
+      </div>`;
+  });
 
   mainSection += '<div class="carousel-item"></div>';
 
+  
+  // seleccionar carrusel
   const carouselInner = document.querySelector('.carousel-inner');
+
   if (carouselInner) {
-      carouselInner.innerHTML = mainSection;
+    carouselInner.innerHTML = mainSection;
+    showSlide(1);
 
-      showSlide(1);
-      const movieInfos = document.querySelectorAll('.movieInfo');
-      movieInfos.forEach(movieInfo => movieInfo.classList.add('hidden'));
+    document.querySelectorAll('.carousel-item').forEach(item => {
+      item.addEventListener('mouseenter', toggleMovieDetails.bind(null, item, true));
+      item.addEventListener('mouseleave', toggleMovieDetails.bind(null, item, false));
+    });
+  }
+  
+  function toggleMovieDetails(item, show) {
+    const movieInfo = item.querySelector('.movie-info');
+    const carouselCaption = item.querySelector('.carousel-caption');
+    const img = item.querySelector('img');
+    //const movieTitle = item.querySelector('.carousel-caption h3');
+    const moviePosition = item.querySelector('.movie-position');
 
-      const carouselItems = document.querySelectorAll('.carousel-item');
-      carouselItems.forEach(item => {
-          item.addEventListener('mouseenter', function() {
-              const movieInfo = this.querySelector('.movieInfo');
-              const carouselCaption = this.querySelector('.carousel-caption');
-              const img = this.querySelector('img');
-
-              if (movieInfo) {
-                  movieInfo.classList.remove('hidden');
-              }
-              if (carouselCaption) {
-                  carouselCaption.classList.add('hidden');
-              }
-              if (img) {
-                  img.classList.add('hidden');
-              }
-          });
-
-          item.addEventListener('mouseleave', function() {
-              const movieInfo = this.querySelector('.movieInfo');
-              const carouselCaption = this.querySelector('.carousel-caption');
-              const img = this.querySelector('img');
-
-              if (movieInfo) {
-                  movieInfo.classList.add('hidden');
-              }
-              if (carouselCaption) {
-                  carouselCaption.classList.remove('hidden');
-              }
-              if (img) {
-                  img.classList.remove('hidden');
-              }
-          });
-      });
+    if (movieInfo) movieInfo.classList.toggle('hidden', !show);
+    if (carouselCaption) carouselCaption.classList.toggle('hidden', show);
+    if (img) img.classList.toggle('hidden', show);
+    //if (movieTitle) movieTitle.classList.toggle('hidden', show); // Oculta el título
+    if (moviePosition) moviePosition.classList.toggle('hidden', show); // Oculta movie-position
   }
 }
+
 
 function showSlide(index) {
   const slides = document.querySelectorAll('.carousel-item');
@@ -279,6 +295,11 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('logo').addEventListener('click', function() {
     location.reload();
   });
+});
+
+document.getElementById('link1').addEventListener('click', function(event) {
+  console.log("se clikeo link1");
+  fetchActorMovies();
 });
 
 document.getElementById('link2').addEventListener('click', function(event) {

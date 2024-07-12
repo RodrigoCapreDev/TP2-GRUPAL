@@ -128,9 +128,9 @@ main {
     justify-content: center;
     align-items: center;
     border: solid 1px black;
-    position: relative;
+    /*position: relative;
     right: 10px;
-    z-index: 1;
+    z-index: 1;*/
 }
 
 main button {
@@ -158,6 +158,7 @@ button img {
     justify-content: center;
     align-items: center;
     z-index: 1;
+    height: 100%;
 }
 
 .carousel-inner {
@@ -167,9 +168,11 @@ button img {
     width: 100%;
     justify-content: center;
     align-items: center;
+    height: 100%;
 }
 
 .carousel-item {
+    position: relative;
     flex: 1;
     opacity: 0.9;
     transform: scale(0.95);
@@ -177,11 +180,10 @@ button img {
     justify-content: center;
     align-items: center;
     margin: 0 10px;
-    position: relative;
+    height: 100%;
 }
 
-.carousel-item img,
-.moviePoster img {
+.carousel-item img{
     width: 100%;
     height: auto;
     border-radius: 10px;
@@ -223,6 +225,10 @@ button img {
     border-top-left-radius: 10px;
 }
 
+.carousel-caption h3.hidden {
+    display: none;
+}
+
 .carousel-caption {
     position: absolute;
     bottom: 0;
@@ -241,18 +247,40 @@ button img {
     display: none;
 }
 
-.movieDetails {
-    display: none;
-}
 
-.carousel-item:hover .movieDetails {
+.carousel-item:hover .movie-info {
     position: absolute;
-    bottom: 4px;
-    width: 90.25%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
+    flex-wrap: wrap;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    color: #fff;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background: rgba(0, 0, 0, 0.9); /* Ajustar opacidad si es necesario */
+    padding: 5%;
+    font-size: larger;
+    font-family: math;
+    z-index: 10; /* Asegurar que esté por encima de otros elementos */
+    border-radius: 10px;
+}
+
+
+
+.movie-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    bottom: 4px;
+    width: 90.25%;
     color: #fff;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -262,14 +290,40 @@ button img {
     font-family: math;
 }
 
-.movieInfo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/*todo lo que se muestra cuando apoyas el cursor*/
+.movie_info_block{
+    width: 50%;
+    box-sizing: border-box;
+    padding-right: 8px;
+    margin-bottom: 10px;
+  }
+  
+.movie_info_block.block_wide{
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 8px;
+    margin-bottom: 10px;
 }
+  
+.movie_info_tittle{
+    color:#828282;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-family: "Roboto" ,sans-serif;
+    font-style: normal;
+    font-weight: 400;
+}
+  
+.movie_info_text{
+    word-wrap: break-word;
+    color:white;
+    font-size: 14px;
+    font-family: "Roboto" ,sans-serif;
+    font-style: normal;
+    font-weight: 400;
+  }
 
-h3,
-p {
+h3, p {
     margin: 0;
 }
 
