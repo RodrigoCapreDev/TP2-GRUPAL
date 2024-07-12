@@ -1,24 +1,23 @@
-//Api info https://developer.themoviedb.org/docs/getting-started
-apiTMBDtoken='eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNjFjMjRlMzRhOTVlODcyMzM3Zjg1ZTIwZTA0NjVjNCIsIm5iZiI6MTcyMDE5NzUzNS4yOTA4OSwic3ViIjoiNjY4ODAzOTJmNGJiMjQ5OGYzYjBhMmFlIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hJ6wjC2I_Uj_k3Kg5lk65vJ3cLH-Mh7PSgq5U3g6LTk';
-StrapiToken='099da4cc6cbb36bf7af8de6f1f241f8c81e49fce15709c4cfcae1313090fa2c1ac8703b0179863b4eb2739ea65ae435e90999adb870d49f9f94dcadd88999763119edca01a6b34c25be92a80ed30db1bcacb20df40e4e7f45542bd501f059201ad578c18a11e4f5cd592cb25d6c31a054409caa99f11b6d2391440e9c72611ea';
+const apiTMBDtoken = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzNjFjMjRlMzRhOTVlODcyMzM3Zjg1ZTIwZTA0NjVjNCIsIm5iZiI6MTcyMDE5NzUzNS4yOTA4OSwic3ViIjoiNjY4ODAzOTJmNGJiMjQ5OGYzYjBhMmFlIiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.hJ6wjC2I_Uj_k3Kg5lk65vJ3cLH-Mh7PSgq5U3g6LTk';
+const StrapiToken = '099da4cc6cbb36bf7af8de6f1f241f8c81e49fce15709c4cfcae1313090fa2c1ac8703b0179863b4eb2739ea65ae435e90999adb870d49f9f94dcadd88999763119edca01a6b34c25be92a80ed30db1bcacb20df40e4e7f45542bd501f059201ad578c18a11e4f5cd592cb25d6c31a054409caa99f11b6d2391440e9c72611ea';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const STRAPI_URL = 'https://gestionweb.frlp.utn.edu.ar/api/g18-peliculas'; // URL de tu instancia de Strapi
 
-const actorName='Tom Cruise';
-let movies=null;
-//Para buscar peliculas del actor utilizando la libreria de js axios
+const actorName = 'Tom Cruise';
+let movies = null;
+
 async function fetchActorMovies() {
   try {
-    //Llamamos a la funcion para obtener el id del actor
-    const actorId= await getActorId(actorName);
-    //Llamamos a la funcion para obtener las peliculas donde actua el actor
+    // Obtener ID del actor
+    const actorId = await getActorId(actorName);
+    // Obtener películas del actor
     const movies = await getActorMovies(actorId);
-    //Llamamos a la funcion para obtener los detalles de las peliculas
+    // Obtener detalles de las películas
     const movieDetails = await getMovieDetails(movies);
 
-    //Si hay datos en strapi, se borrar (Reinicio CMS)
+    // Reiniciar CMS (Eliminar datos existentes en Strapi)
     await deleteAllDataFromStrapi();
-    //Envia las nuevas peliculas a Strapi
+    // Enviar nuevas películas a Strapi
     await sendMoviesToStrapi(movieDetails);
   } catch (error) {
     console.error('Error fetching movie data:', error);
@@ -142,10 +141,9 @@ async function sendMoviesToStrapi(movieDetails) {
     }
   }
 }
-fetchActorMovies();
 
+fetchActorMovies();
 async function getDataFromStrapi() {
-  //para recuperar las peliculas
   try {
     const response = await fetch(STRAPI_URL, {
       method: 'GET',
@@ -155,141 +153,131 @@ async function getDataFromStrapi() {
       }
     })
     .then(result => result.json())
-		.then(data =>{
-			respuesta = data;
+    .then(data => {
       console.log(data); 
-			return data; //devuelve los 20 primeros resultados
-		});
-    //const moviesStrapi = response.data;
-    console.log(response.data);
-    movies=response.data;
+      return data; 
+    });
+
+    movies = response.data;
     loadCarousel();
   } catch (error) {
     console.error('Fetch error:', error);
   }
 }
 
-
-//CARRUSEL
 const carouselInner = document.getElementById('carouselInner');
 let currentIndex = 1;
 
-
 function loadCarousel() {
- 
-    let mainSection = '<div class="carousel-item"></div>';
-    
-    movies.forEach((movie, i) => {
-      mainSection += `
-            <div class="carousel-item">
-                <div class="actor-position">
-                    <h2>${i + 1}</h2>
-                </div>
-                <img src="${movie.attributes.Imagen}" alt="Movie Poster">
-                <div class="carousel-caption">
-                    <h3>${movie.attributes.Titulo}</h3>
-                </div>
-            </div>`;
+  let mainSection = '<div class="carousel-item"></div>';
   
-    });
+  movies.forEach((movie, i) => {
+    mainSection += `
+          <div class="carousel-item">
+              <div class="actor-position">
+                  <h2>${i + 1}</h2>
+              </div>
+              <img src="${movie.attributes.Imagen}" alt="Movie Poster">
+              <div class="carousel-caption">
+                  <h3>${movie.attributes.Titulo}</h3>
+              </div>
+          </div>`;
+  });
 
-    mainSection += '<div class="carousel-item"></div>';
+  mainSection += '<div class="carousel-item"></div>';
 
-    const carouselInner = document.querySelector('.carousel-inner');
-    if (carouselInner) {
-        carouselInner.innerHTML = mainSection;
+  const carouselInner = document.querySelector('.carousel-inner');
+  if (carouselInner) {
+      carouselInner.innerHTML = mainSection;
 
-        showSlide(1);
-        const movieInfos = document.querySelectorAll('.movieInfo');
-        movieInfos.forEach(movieInfo => movieInfo.classList.add('hidden'));
+      showSlide(1);
+      const movieInfos = document.querySelectorAll('.movieInfo');
+      movieInfos.forEach(movieInfo => movieInfo.classList.add('hidden'));
 
-        const carouselItems = document.querySelectorAll('.carousel-item');
-        carouselItems.forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                const movieInfo = this.querySelector('.movieInfo');
-                const carouselCaption = this.querySelector('.carousel-caption');
-                const img = this.querySelector('img');
+      const carouselItems = document.querySelectorAll('.carousel-item');
+      carouselItems.forEach(item => {
+          item.addEventListener('mouseenter', function() {
+              const movieInfo = this.querySelector('.movieInfo');
+              const carouselCaption = this.querySelector('.carousel-caption');
+              const img = this.querySelector('img');
 
-                if (movieInfo) {
-                    movieInfo.classList.remove('hidden');
-                }
-                if (carouselCaption) {
-                    carouselCaption.classList.add('hidden');
-                }
-                if (img) {
-                    img.classList.add('hidden');
-                }
-            });
+              if (movieInfo) {
+                  movieInfo.classList.remove('hidden');
+              }
+              if (carouselCaption) {
+                  carouselCaption.classList.add('hidden');
+              }
+              if (img) {
+                  img.classList.add('hidden');
+              }
+          });
 
-            item.addEventListener('mouseleave', function() {
-                const movieInfo = this.querySelector('.movieInfo');
-                const carouselCaption = this.querySelector('.carousel-caption');
-                const img = this.querySelector('img');
+          item.addEventListener('mouseleave', function() {
+              const movieInfo = this.querySelector('.movieInfo');
+              const carouselCaption = this.querySelector('.carousel-caption');
+              const img = this.querySelector('img');
 
-                if (movieInfo) {
-                    movieInfo.classList.add('hidden');
-                }
-                if (carouselCaption) {
-                    carouselCaption.classList.remove('hidden');
-                }
-                if (img) {
-                    img.classList.remove('hidden');
-                }
-            });
-        });
+              if (movieInfo) {
+                  movieInfo.classList.add('hidden');
+              }
+              if (carouselCaption) {
+                  carouselCaption.classList.remove('hidden');
+              }
+              if (img) {
+                  img.classList.remove('hidden');
+              }
+          });
+      });
   }
 }
 
-
 function showSlide(index) {
-    const slides = document.querySelectorAll('.carousel-item');
-    const totalSlides = slides.length;
+  const slides = document.querySelectorAll('.carousel-item');
+  const totalSlides = slides.length;
 
-    if (index >= totalSlides) {
-        currentIndex = 0;
-    } else if (index < 0) {
-        currentIndex = totalSlides - 1;
-    } else {
-        currentIndex = index;
-    }
-    console.log(slides);
-    for (let i = 0 ; i < slides.length ; i++)  {
-        let slide = slides[i];
-        console.log(slide);
-        slide.classList.remove('active', 'left', 'right', 'hidden');
-        if (i === currentIndex) {
-            slide.classList.add('active');
-        } else if (i === currentIndex - 1 || (currentIndex === 0 && i === 2)) {
-            slide.classList.add('left');
-        } else if (i === currentIndex + 1 || (currentIndex === totalSlides - 1 && i === 7)) {
-            slide.classList.add('right');
-        } else {
-            slide.classList.add('hidden');
-        }
-    };
+  if (index >= totalSlides) {
+      currentIndex = 0;
+  } else if (index < 0) {
+      currentIndex = totalSlides - 1;
+  } else {
+      currentIndex = index;
+  }
+  console.log(slides);
+  for (let i = 0 ; i < slides.length ; i++)  {
+      let slide = slides[i];
+      console.log(slide);
+      slide.classList.remove('active', 'left', 'right', 'hidden');
+      if (i === currentIndex) {
+          slide.classList.add('active');
+      } else if (i === currentIndex - 1 || (currentIndex === 0 && i === 2)) {
+          slide.classList.add('left');
+      } else if (i === currentIndex + 1 || (currentIndex === totalSlides - 1 && i === 7)) {
+          slide.classList.add('right');
+      } else {
+          slide.classList.add('hidden');
+      }
+  }
 }
 
-
 function prevSlide() {
-  if(currentIndex == 1) {
-      return ;
+  if (currentIndex == 1) {
+      return;
   }
   showSlide(currentIndex - 1);
 }
 
 function nextSlide() {
-  if(currentIndex == 10) {
-      return ;
+  if (currentIndex == 10) {
+      return;
   }
   showSlide(currentIndex + 1);
 }
 
-//RECARGAR PAGINA CON EL LOGO
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('logo').addEventListener('click', function() {
-      location.reload();
-    });
+  document.getElementById('logo').addEventListener('click', function() {
+    location.reload();
   });
+});
 
 document.getElementById('link2').addEventListener('click', function(event) {
   console.log("se clikeo link2");
