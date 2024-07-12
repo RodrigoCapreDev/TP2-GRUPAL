@@ -175,44 +175,38 @@ function loadCarousel() {
   movies.forEach((movie, i) => {
     mainSection += `
       <div class="carousel-item">
-        <div class="movie-position">
-          <h2>${i + 1}</h2>
-        </div>
         <img src="${movie.attributes.Imagen}" alt="Movie Poster">
         <div class="movie-info hidden"> 
           <div class="movie_info_block block_wide">
-            <div class="movie_info_tittle"><p>Titulo</p></div>
+            <div class="movie_info_title"><p>Titulo</p></div>
             <div class="movie_info_text titulo">
               <p>${movie.attributes.Titulo}</p>
             </div>
           </div>
           <div class="movie_info_block block_wide">
-            <div class="movie_info_tittle"><p>Sinopsis</p></div>
+            <div class="movie_info_title"><p>Sinopsis</p></div>
             <div class="movie_info_text sinopsis">
               <p>${movie.attributes.Sinopsis}</p>
             </div>
           </div>
           <div class="movie_info_block block_wide">
-            <div class="movie_info_tittle"><p>Generos</p></div>
+            <div class="movie_info_title"><p>Genero/s</p></div>
             <div class="movie_info_text generos">
               <p>${movie.attributes.Genero}</p>
             </div>
           </div>
           <div class="movie_info_block block_wide">
-            <div class="movie_info_tittle"><p>Cant Votos</p></div>
+            <div class="movie_info_title"><p>Cantidad de Votos</p></div>
             <div class="movie_info_text cant_votos">
               <p>${movie.attributes.CantVotos}</p>
             </div>
           </div>
           <div class="movie_info_block block_wide">
-            <div class="movie_info_tittle"><p>Prom Votos</p></div>
+            <div class="movie_info_title"><p>Promedio de Votos</p></div>
             <div class="movie_info_text prom_votos">
               <p>${movie.attributes.PromVotos}</p>
             </div>
           </div>
-        </div>
-        <div class="carousel-caption">
-          <h3>${movie.attributes.Titulo}</h3>
         </div>
       </div>`;
   });
@@ -231,6 +225,7 @@ function loadCarousel() {
       item.addEventListener('mouseenter', toggleMovieDetails.bind(null, item, true));
       item.addEventListener('mouseleave', toggleMovieDetails.bind(null, item, false));
     });
+    carouselInner.parentElement.classList.add('carousel-visible');
   }
   
   function toggleMovieDetails(item, show) {
