@@ -232,13 +232,11 @@ function loadCarousel() {
     const movieInfo = item.querySelector('.movie-info');
     const carouselCaption = item.querySelector('.carousel-caption');
     const img = item.querySelector('img');
-    //const movieTitle = item.querySelector('.carousel-caption h3');
     const moviePosition = item.querySelector('.movie-position');
 
     if (movieInfo) movieInfo.classList.toggle('hidden', !show);
     if (carouselCaption) carouselCaption.classList.toggle('hidden', show);
     if (img) img.classList.toggle('hidden', show);
-    //if (movieTitle) movieTitle.classList.toggle('hidden', show); // Oculta el título
     if (moviePosition) moviePosition.classList.toggle('hidden', show); // Oculta movie-position
   }
 }
